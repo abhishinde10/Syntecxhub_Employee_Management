@@ -1,7 +1,13 @@
+import './EmployeeList.css';
+
 const EmployeeList = ({ employees, fetchEmployees, setEditingEmployee, loading, error }) => {
+  const getInitials = (name) => {
+    if (!name) return '?';
+    return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+  };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this employee?')) return;
+    if (!window.confirm('Are you sure?')) return;
 
     try {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
@@ -29,11 +35,7 @@ const EmployeeList = ({ employees, fetchEmployees, setEditingEmployee, loading, 
   }
 
   if (employees.length === 0) {
-    return (
-      <div className="empty-state">
-        <p>No employees found. Add one to get started!</p>
-      </div>
-    );
+    return <p className="empty-state">No employees found</p>;
   }
 
   return (
@@ -43,13 +45,16 @@ const EmployeeList = ({ employees, fetchEmployees, setEditingEmployee, loading, 
         {employees.map((emp) => (
           <div key={emp._id} className="employee-card">
             <div className="card-header">
-              <h3>{emp.name}</h3>
-              <span className="role-badge">{emp.role}</span>
+              <div className="avatar">{getInitials(emp.name)}</div>
+              <div className="header-info">
+                <h3>{emp.name}</h3>
+                <span className="role-badge">{emp.role}</span>
+              </div>
             </div>
             <div className="card-body">
               <p className="salary">
-                <span className="label">Salary:</span> 
-                ${emp.salary.toLocaleString()}
+                <span className="label">Salary</span> 
+                <span className="salary-amount">${emp.salary.toLocaleString()}</span>
               </p>
             </div>
             <div className="card-actions">
